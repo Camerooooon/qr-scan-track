@@ -36,6 +36,7 @@ pub struct Coordinates {
 #[derive(Serialize, Deserialize, Debug, Eq, PartialEq, Clone)]
 #[serde(crate = "rocket::serde")]
 pub struct Tracker {
+    pub campaign: String,
     pub log: Vec<Click>,
     pub loc: Option<Coordinates>,
     pub url: String,

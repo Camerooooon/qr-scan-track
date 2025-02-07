@@ -42,14 +42,15 @@ impl<'r> FromRequest<'r> for ApiKey {
     }
 }
 
-#[put("/new_track", data = "<url>")]
-fn new_track(url: &str, _api_key: ApiKey) -> Result<String, status::Custom<String>> {
+#[put("/new_track?<campaign>", data = "<url>")]
+fn new_track(campaign : &str, url: &str, _api_key: ApiKey) -> Result<String, status::Custom<String>> {
     let service_opt = track::load();
 
     let mut service = service_opt.unwrap_or_default();
 
     let id = random_id();
     let tracker = Tracker {
+            campaign: campaign.to_string(),
             loc: None,
             id: id.clone(),
             log: vec![],
