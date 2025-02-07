@@ -1,6 +1,6 @@
 import matplotlib.pyplot as plt
 import matplotlib.dates as mdates
-from datetime import datetime, timezone
+from datetime import datetime
 from collections import defaultdict
 import pytz
 from api import fetch_data

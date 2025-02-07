@@ -12,7 +12,7 @@ def fetch_data(api_url):
     }
     response = requests.get(BASE_URL + api_url, headers=headers)
     print(response.headers['content-type'])
-    
+
     # Check if the response is successful
     if response.status_code == 200:
         try:
