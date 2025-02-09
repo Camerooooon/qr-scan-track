@@ -2,8 +2,10 @@
 /pyenv
 /codes
 /__pycache__
+/analysis/__pycache__
 /analysis/output_posters
 /analysis/heatmap_with_osm_and_markers.html
 /analysis/poster_template.png
 
+.env
 README.pdf

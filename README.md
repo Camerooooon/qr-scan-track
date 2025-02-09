@@ -3,6 +3,10 @@ QR Scan Tracker
 
 A self-hosted URL shortner that keeps track of device details for marketing purposes.
 
+# Starting the website
+
+Use `docker compose up` to automatically build and start the website on port 8080
+
 # Environment variables
 
 Set the environment variable `TRACKER_DATABASE_PATH` to the directory where you want to save the json database which contains the logs of click.
