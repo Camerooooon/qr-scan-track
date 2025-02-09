@@ -123,7 +123,7 @@ fn geotag(id: &str, lon: f32, lat: f32, _api_key: ApiKey) -> Result<(), status::
 }
 
 #[get("/get_all_tracks")]
-fn get_all_tracks(_api_key: ApiKey) -> Result<Json<String>, status::Custom<String>> {
+fn get_all_tracks(_api_key: ApiKey) -> Result<Json<Service>, status::Custom<String>> {
     let service_opt = track::load();
 
     let service = match service_opt {
@@ -131,12 +131,7 @@ fn get_all_tracks(_api_key: ApiKey) -> Result<Json<String>, status::Custom<Strin
         None => Service::default(),
     };
 
-    return serde_json::to_string(&service).map(Json).map_err(|_| {
-        status::Custom(
-            Status::InternalServerError,
-            "Serialization error".to_string(),
-        )
-    });
+    return Ok(Json(service))
 }
 
 #[get("/<id>")]

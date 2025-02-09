@@ -15,12 +15,23 @@ def fetch_data(api_url):
 
     # Check if the response is successful
     if response.status_code == 200:
-        try:
-            # Attempt to parse the JSON response manually
-            return json.loads(response.json())
-        except json.JSONDecodeError as e:
-            print(f"Error parsing JSON: {e}")
-            return {}
+        return response.json()
     else:
         print(f"Error fetching data: {response.status_code}")
         return {}
+
+# Function to call the API and create a new tracker
+def create_tracker(api_key, url, campaign):
+    headers = {'X-API-Key': api_key}
+    response = requests.put(BASE_URL + "/track/new_track?campaign=" + campaign, data=url, headers=headers)
+    
+    if response.status_code == 200:
+        data = response.json()
+        if data.get('success'):
+            return data['tracker']['id']
+        else:
+            print("Error: Tracker creation failed.")
+            return None
+    else:
+        print(f"Error: {response.status_code}")
+        return None

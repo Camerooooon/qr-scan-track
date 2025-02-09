@@ -41,8 +41,8 @@ def main():
 
     print(data)
     
-    # Select the category you want to visualize (options: 'user_agent', 'os', 'device')
-    category = 'device'  # You can change this to 'user_agent', 'device', etc.
+    # Select the category you want to visualize (options: 'user_agent', 'os', 'device', 'campaign')
+    category = 'os'  # You can change this to 'user_agent', 'device', etc.
     
     # Extract data for the selected category
     category_data = extract_data(data, category)

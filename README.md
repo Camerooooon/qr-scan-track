@@ -5,7 +5,13 @@ A self-hosted URL shortner that keeps track of device details for marketing purp
 
 # Starting the website
 
+## Using docker
+
 Use `docker compose up` to automatically build and start the website on port 8080
+
+## Using cargo
+
+`TRACKER_DATABASE_PATH="./database.json" TRACKER_ADMIN_KEY="123" cargo run` to start the website on 8000
 
 # Environment variables
 
