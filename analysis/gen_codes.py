@@ -1,6 +1,4 @@
-import requests
 import qrcode
-import json
 
 from api import create_tracker
 
@@ -16,10 +14,9 @@ def main():
 
     # Step 1: Create the tracker and get the ID
     
-
     # Step 2: Generate n QR codes with the track URL (localhost:8000/<id>)
     n = 5  # Number of QR codes to generate (change as needed)
-    for i in range(1, n+1):
+    for i in range(1, n + 1):
         tracker_id = create_tracker(api_key, original_url, campaign)
         print(tracker_id)
         print(f"Tracker created with ID: {tracker_id}")

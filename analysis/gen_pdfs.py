@@ -41,8 +41,8 @@ def generate_multiple_posters(poster_path, redirect_url, campaign, num_versions,
     for i in range(num_versions):
         id = create_tracker(API_KEY, redirect_url, campaign)
         qr_data = f"{BASE_URL}/{id}"  # Generate unique QR data for each version
-        qr_filename = f"qr_code_{i+1}.png"
-        output_filename = os.path.join(output_dir, f"poster_{i+1}.png")
+        qr_filename = f"qr_code_{i + 1}.png"
+        output_filename = os.path.join(output_dir, f"poster_{i + 1}.png")
         
         # Generate QR code
         generate_qr_code(qr_data, qr_filename)
