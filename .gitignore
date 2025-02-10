@@ -6,6 +6,7 @@
 /analysis/output_posters
 /analysis/heatmap_with_osm_and_markers.html
 /analysis/poster_template.png
+/analysis/config.py
 
 database
 
