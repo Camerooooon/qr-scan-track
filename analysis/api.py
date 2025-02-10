@@ -1,7 +1,7 @@
 import requests
 
-BASE_URL = "http://localhost:8000"
-API_KEY = "123"
+from config import BASE_URL, API_KEY
+
 
 
 # Function to query the API and fetch data
