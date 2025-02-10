@@ -2,12 +2,10 @@ import requests
 
 from config import BASE_URL, API_KEY
 
-
-
 # Function to query the API and fetch data
 def fetch_data(api_url):
     headers = {
-        'X-API-Key': API_KEY
+        'x-api-key': API_KEY
     }
     response = requests.get(BASE_URL + api_url, headers=headers)
     print(response.headers['content-type'])
@@ -20,8 +18,8 @@ def fetch_data(api_url):
         return {}
 
 # Function to call the API and create a new tracker
-def create_tracker(api_key, url, campaign):
-    headers = {'X-API-Key': api_key}
+def create_tracker(url, campaign):
+    headers = {'x-api-key': API_KEY}
     response = requests.put(BASE_URL + "/track/new_track?campaign=" + campaign, data=url, headers=headers)
     
     if response.status_code == 200:

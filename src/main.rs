@@ -35,7 +35,7 @@ impl<'r> FromRequest<'r> for ApiKey {
         };
 
         // Extract API key from header
-        match req.headers().get_one("X-API-Key") {
+        match req.headers().get_one("x-api-key") {
             Some(received_key) if received_key == expected_key => Outcome::Success(ApiKey(received_key.to_string())),
             _ => Outcome::Error((Status::Unauthorized, ())),
         }
