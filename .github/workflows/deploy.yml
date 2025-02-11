@@ -1,0 +1,36 @@
+name: Deploy to Production
+
+on:
+  push:
+    branches:
+      - production  # Runs when pushing to "production" branch
+
+jobs:
+  build-and-push:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+
+      - name: Log in to GitHub Container Registry
+        run: echo "${{ secrets.GHCR_TOKEN }}" | docker login ghcr.io -u $GITHUB_ACTOR --password-stdin
+
+      - name: Build Docker image
+        run: |
+          docker build -t ghcr.io/${{ github.repository_owner }}/qr-scan-track:latest .
+
+      - name: Push image to GitHub Container Registry
+        run: docker push ghcr.io/${{ github.repository_owner }}/qr-scan-track:latest
+
+      - name: SSH into Server and Update Container
+        uses: appleboy/ssh-action@v0.1.10
+        with:
+          host: ${{ secrets.SERVER_IP }}
+          username: ${{ secrets.SERVER_USER }}
+          key: ${{ secrets.SERVER_SSH_KEY }}
+          script: |
+            docker pull ghcr.io/${{ github.repository_owner }}/my-image:latest
+            docker stop qr-scan-track || true
+            docker rm qr-scan-track || true
+            docker run -d --env-file=.env --name=qr-scan-track -p 3000:8080 -v database:/app/ ghcr.io/camerooooon/qr-scan-track:latest
+a9a86ef335d2213e7957e4648faecf8d110245fdb11c3c0c7582d69c3baa08b9
