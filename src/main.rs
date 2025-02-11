@@ -11,7 +11,7 @@ use rocket::{post, Request}; use rocket::{
     response::{status, Redirect},
     routes,
 };
-use serde_json::json;
+use serde_json::{json, Value};
 use track::{random_id, save, Click, Coordinates, Service, Tracker};
 use user_agent_parser::{Device, Engine, Product, UserAgent, UserAgentParser, CPU, OS};
 
@@ -43,7 +43,7 @@ impl<'r> FromRequest<'r> for ApiKey {
 }
 
 #[put("/new_track?<campaign>", data = "<url>")]
-fn new_track(campaign : &str, url: &str, _api_key: ApiKey) -> Result<String, status::Custom<String>> {
+fn new_track(campaign : &str, url: &str, _api_key: ApiKey) -> Result<String, status::Custom<Json<String>>> {
     let service_opt = track::load();
 
     let mut service = service_opt.unwrap_or_default();
@@ -66,7 +66,7 @@ fn new_track(campaign : &str, url: &str, _api_key: ApiKey) -> Result<String, sta
 }
 
 #[get("/get_track/<id>")]
-fn get_track(id: &str, _api_key: ApiKey) -> Result<Json<String>, status::Custom<String>> {
+fn get_track(id: &str, _api_key: ApiKey) -> Result<Json<Tracker>, status::Custom<String>> {
     let service_opt = track::load();
 
     let mut service = match service_opt {
@@ -77,12 +77,7 @@ fn get_track(id: &str, _api_key: ApiKey) -> Result<Json<String>, status::Custom<
     let tracker = service.trackers.get_mut(id);
 
     match tracker {
-        Some(t) => serde_json::to_string(t).map(Json).map_err(|_| {
-            status::Custom(
-                Status::InternalServerError,
-                "Serialization error".to_string(),
-            )
-        }),
+        Some(t) => Ok(Json(t.clone())),
         None => Err(status::Custom(
             Status::NotFound,
             json!({"error": "Tracker does not exist"}).to_string(),
