@@ -34,4 +34,4 @@ jobs:
             docker pull ghcr.io/camerooooon/qr-scan-track:latest
             docker stop qr-scan-track || true
             docker rm qr-scan-track || true
-            docker run -d --env-file=.env --name=qr-scan-track -p 3000:3000 -v database:/app/ ghcr.io/camerooooon/qr-scan-track:latest
+            docker run -d --env-file=.env --name=qr-scan-track -p 3000:3000 -v database:/app/database ghcr.io/camerooooon/qr-scan-track:latest
