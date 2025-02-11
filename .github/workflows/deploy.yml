@@ -15,12 +15,14 @@ jobs:
       - name: Log in to GitHub Container Registry
         run: echo "${{ secrets.GHCR_TOKEN }}" | docker login ghcr.io -u $GITHUB_ACTOR --password-stdin
 
-      - name: Build Docker image
-        run: |
-          docker build -t ghcr.io/camerooooon/qr-scan-track:latest .
-
-      - name: Push image to GitHub Container Registry
-        run: docker push ghcr.io/camerooooon/qr-scan-track:latest
+      - name: Build and Push Docker image
+        uses: docker/build-push-action@v5
+        with:
+          context: .
+          push: true
+          tags: ghcr.io/camerooooon/qr-scan-track:latest
+          cache-from: type=registry,ref=ghcr.io/camerooooon/qr-scan-track:latest
+          cache-to: type=inline
 
       - name: SSH into Server and Update Container
         uses: appleboy/ssh-action@v0.1.10
