@@ -66,7 +66,7 @@ fn new_track(campaign : &str, url: &str, _api_key: ApiKey) -> Result<String, sta
 }
 
 #[get("/get_track/<id>")]
-fn get_track(id: &str, _api_key: ApiKey) -> Result<Json<Tracker>, status::Custom<String>> {
+fn get_track(id: &str, _api_key: ApiKey) -> Result<Json<Value>, status::Custom<String>> {
     let service_opt = track::load();
 
     let mut service = match service_opt {
@@ -77,7 +77,7 @@ fn get_track(id: &str, _api_key: ApiKey) -> Result<Json<Tracker>, status::Custom
     let tracker = service.trackers.get_mut(id);
 
     match tracker {
-        Some(t) => Ok(Json(t.clone())),
+        Some(t) => Ok(Json(json!(t.clone()))),
         None => Err(status::Custom(
             Status::NotFound,
             json!({"error": "Tracker does not exist"}).to_string(),
@@ -118,7 +118,7 @@ fn geotag(id: &str, lon: f32, lat: f32, _api_key: ApiKey) -> Result<(), status::
 }
 
 #[get("/get_all_tracks")]
-fn get_all_tracks(_api_key: ApiKey) -> Result<Json<Service>, status::Custom<String>> {
+fn get_all_tracks(_api_key: ApiKey) -> Result<Json<Value>, status::Custom<String>> {
     let service_opt = track::load();
 
     let service = match service_opt {
@@ -126,7 +126,14 @@ fn get_all_tracks(_api_key: ApiKey) -> Result<Json<Service>, status::Custom<Stri
         None => Service::default(),
     };
 
-    return Ok(Json(service))
+    return Ok(Json(json!(service)))
+}
+
+#[get("/test")]
+fn test() -> Json<Value> {
+    Json(json!({
+        "test": "value2"
+    }))
 }
 
 #[get("/<id>")]
@@ -216,5 +223,5 @@ fn rocket() -> _ {
     rocket::build()
         .manage(UserAgentParser::from_str(include_str!("./user_agents.yaml")).unwrap())
         .mount("/track", routes![get_track, new_track, get_all_tracks, geotag])
-        .mount("/", routes![redirect_request])
+        .mount("/", routes![redirect_request, test])
 }
