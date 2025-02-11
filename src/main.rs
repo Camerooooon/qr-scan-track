@@ -1,7 +1,9 @@
+use std::convert::Infallible;
 use std::env;
-use std::net::SocketAddr;
+use std::net::{IpAddr, SocketAddr};
 use std::time::SystemTime;
 
+use rocket::form::FromFormField;
 use rocket::request::{FromRequest, Outcome};
 use rocket::serde::json::Json;
 use rocket::{post, Request}; use rocket::{
@@ -19,6 +21,24 @@ use user_agent_parser::{Device, Engine, Product, UserAgent, UserAgentParser, CPU
 mod track;
 
 struct ApiKey(String);
+struct XRealIP(Option<IpAddr>);
+
+#[rocket::async_trait]
+impl<'r> FromRequest<'r> for XRealIP{
+    type Error = ();
+
+    async fn from_request(request: &'r Request<'_>) -> Outcome<Self, Self::Error> {
+        let token = request.headers().get_one("x-real-ip");
+        match token {
+          Some(token) => {
+
+            Outcome::Success(XRealIP(token.to_string().parse().ok()))
+          },
+          // token does not exist
+            None => Outcome::Success(XRealIP(None))
+        }
+    }
+}
 
 #[rocket::async_trait]
 impl<'r> FromRequest<'r> for ApiKey {
@@ -132,14 +152,15 @@ fn get_all_tracks(_api_key: ApiKey) -> Result<Json<Value>, status::Custom<String
 #[get("/test")]
 fn test() -> Json<Value> {
     Json(json!({
-        "test": "value2"
+        "test": "value3"
     }))
 }
 
 #[get("/<id>")]
 fn redirect_request(
     id: &str,
-    remote_addr: SocketAddr,
+    x_real_ip: XRealIP,
+    remote_addr: IpAddr,
     user_agent: UserAgent,
     product: Product,
     os: OS,
@@ -157,7 +178,7 @@ fn redirect_request(
         Some(tracker) => {
             let click = Click {
                 time: SystemTime::now(),
-                ip: remote_addr.ip(),
+                ip: x_real_ip.0.unwrap_or(remote_addr),
                 user_agent: user_agent
                     .user_agent
                     .ok_or("No user agent")
